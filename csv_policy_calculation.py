@@ -14,24 +14,19 @@ def inflation_adjustment(price, original_year, new_year = 2024):
         year = str(int(year) + 1)
     return str(int(new_price))
 
-def down_payment(price, mortgage, down_percent = 20/100):
-    p = float(price)
-    m = float(mortgage)
-    if mortgage != '0':
-        if p-m > 0:
-            return p-m
-        else:
-            return p*down_percent
-    else:
-        return p*down_percent
+def transaction_tax(price, sale_year, start_year, threshold, percentage):
+    if price > threshold:
+        if sale_year >= start_year:
+            return (price-threshold)*percentage
 
-def mortgage_payment(principal, r = 6.952/(100*12), n = 12*30):
-    p = float(principal)
-    return (p*(r*(1+r)**n)/((1+r)**n-1))*12
+def propery_tax(price, brackets):
+    tax = 0
+    for bracket in brackets:
+        
 
 reader = csv.DictReader(open('boston_residential_sales.csv'))
 new_fields = ['adjusted_price', 'adjusted_mortgage', 'down_payment', 'yearly_payments', 'first_year_payment']
-writer = csv.DictWriter(open('new_boston_residential_sales.csv', 'w'), fieldnames=reader.fieldnames+new_fields)
+writer = csv.DictWriter(open('policies_boston_residential_sales.csv', 'w'), fieldnames=reader.fieldnames+new_fields)
 writer.writeheader()
 for row in reader:
     sale_year = row['date'][0:4]
