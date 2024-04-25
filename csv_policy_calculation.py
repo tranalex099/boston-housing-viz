@@ -74,3 +74,14 @@ for row in reader:
 
 print("transfer tax: ", total_transfer_tax)
 print("property tax: ", total_property_tax)
+
+reader = csv.DictReader(open('policies_boston_residential_sales.csv'))
+fields = ['full_address', 'lon', 'lat', 'transfer_tax', 'property_tax']
+writer = csv.DictWriter(open('filtered_policies_boston_residential_sales', 'w'), fieldnames=fields)
+writer.writeheader()
+for row in reader:
+    record = dict()
+    record['full_address'] = row['address'] + ', ' + row['city'] + ', ' + row['zip']
+    for field in fields[1:]:
+        record[field] = row[field]
+    writer.writerow(record)
