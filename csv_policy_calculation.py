@@ -7,6 +7,11 @@ for row in reader:
     inflation_dict[row['Year']] = row['Inflation Rate']
 
 def inflation_adjustment(price, original_year, new_year = 2024):
+    """
+    price: type
+    original_year:
+    new_year:
+    """
     year = original_year
     new_price = float(price)
     while int(year) < new_year:
@@ -28,7 +33,8 @@ def progressive_tax(price, thresholds, percentages):
     taxes = 0
     for i in range(len(percentages)):
         if i == len(thresholds)-1 or price < thresholds[i+1]:
-            taxes += (price-thresholds[i])*(percentages[i])
+            if price-thresholds[i] > 0:
+                taxes += (price-thresholds[i])*(percentages[i])
         else:
             taxes += (thresholds[i+1] - thresholds[i]) * percentages[i]
     return taxes
