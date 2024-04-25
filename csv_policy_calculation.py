@@ -14,15 +14,15 @@ def inflation_adjustment(price, original_year, new_year = 2024):
         year = str(int(year) + 1)
     return str(int(new_price))
 
-property_thresholds = []
-property_percentages = []
+property_thresholds = [0]
+property_percentages = [0]
 year_property = 2000
 total_property_tax = 0
 
-transfer_thresholds = []
-transfer_percentages = []
+transfer_thresholds = [0]
+transfer_percentages = [0]
 year_transfer = 2000
-total_property_tax = 0
+total_transfer_tax = 0
 
 def progressive_tax(price, thresholds, percentages):
     taxes = 0
@@ -44,7 +44,7 @@ for row in reader:
     if sale_year >= year_transfer:
         transfer_tax = progressive_tax(sale_price, transfer_thresholds, transfer_percentages)
         adjusted_transfer_tax = inflation_adjustment(transfer_tax, sale_year)
-        total_property_tax += adjusted_transfer_tax
+        total_transfer_tax += adjusted_transfer_tax
     else:
         transfer_tax = 0
     row['transfer_tax'] = transfer_tax
@@ -62,3 +62,6 @@ for row in reader:
     total_property_tax += prop_tax
     row['property_tax'] = prop_tax
     writer.writerow(row)
+
+print("transfer tax: ", total_transfer_tax)
+print("property tax: ", total_property_tax)
