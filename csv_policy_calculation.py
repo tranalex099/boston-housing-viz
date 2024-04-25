@@ -48,6 +48,17 @@ for row in reader:
     else:
         transfer_tax = 0
     row['transfer_tax'] = transfer_tax
-    yr = year_property
-    while yr <= curr_year:
+    year_built = row['yearbuilt']
+    if year_built < year_property:
+        yr = year_property
+    else:
+        yr = year_built
+    prop_tax = 0
+    while yr <= 2024:
+        yr_val = inflation_adjustment(sale_price, sale_year, yr)
+        yr_prop_tax = progressive_tax(yr_val, property_thresholds, property_percentages)
+        prop_tax += inflation_adjustment(yr_prop_tax, yr, 2024)
+        yr += 1
+    total_property_tax += prop_tax
+    row['property_tax'] = prop_tax
     writer.writerow(row)
