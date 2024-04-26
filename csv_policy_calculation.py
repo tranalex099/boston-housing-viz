@@ -41,7 +41,7 @@ def progressive_tax(price, thresholds, percentages):
         
 
 reader = csv.DictReader(open('boston_residential_sales.csv'))
-new_fields = ['transfer_tax', 'property_tax']
+new_fields = ['transfer_tax', 'property_tax', 'property_tax_list']
 writer = csv.DictWriter(open('policies_boston_residential_sales.csv', 'w'), fieldnames=reader.fieldnames+new_fields)
 writer.writeheader()
 for row in reader:
@@ -63,20 +63,24 @@ for row in reader:
     else:
         yr = str(year_built)
     prop_tax = 0
+    prop_tax_list = []
     while int(yr) <= 2024:
         yr_val = inflation_adjustment(sale_price, sale_year, int(yr))
         yr_prop_tax = progressive_tax(int(yr_val), property_thresholds, property_percentages)
-        prop_tax += int(inflation_adjustment(yr_prop_tax, yr, 2024))
-        yr += str(int(yr)+1)
+        adj_yr_prop_tax = int(inflation_adjustment(yr_prop_tax, yr, 2024))
+        prop_tax_list.append(adj_yr_prop_tax)
+        prop_tax += adj_yr_prop_tax
+        yr = str(int(yr)+1)
     total_property_tax += prop_tax
     row['property_tax'] = prop_tax
+    row['property_tax_list'] = prop_tax_list
     writer.writerow(row)
 
 print("transfer tax: ", total_transfer_tax)
 print("property tax: ", total_property_tax)
 
 reader = csv.DictReader(open('policies_boston_residential_sales.csv'))
-fields = ['full_address', 'lon', 'lat', 'transfer_tax', 'property_tax']
+fields = ['full_address', 'lon', 'lat', 'transfer_tax', 'property_tax', 'property_tax_list']
 writer = csv.DictWriter(open('filtered_policies_boston_residential_sales', 'w'), fieldnames=fields)
 writer.writeheader()
 for row in reader:
