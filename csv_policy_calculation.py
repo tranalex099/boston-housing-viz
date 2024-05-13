@@ -19,13 +19,13 @@ def inflation_adjustment(price, original_year, new_year = 2024):
         year = str(int(year) + 1)
     return str(int(new_price))
 
-property_thresholds = [500000, 1000000]
-property_percentages = [0.03, 0.06]
+property_thresholds = [500000, 1000000, 2000000]
+property_percentages = [0.01, 0.02, 0.04]
 year_property = 2000
 total_property_tax = 0
 
-transfer_thresholds = [1000000]
-transfer_percentages = [0.05]
+transfer_thresholds = [1000000, 5000000]
+transfer_percentages = [0.05, 0.075]
 year_transfer = 2000
 total_transfer_tax = 0
 
@@ -67,7 +67,8 @@ for row in reader:
     while int(yr) <= 2024:
         yr_val = inflation_adjustment(sale_price, sale_year, int(yr))
         yr_prop_tax = progressive_tax(int(yr_val), property_thresholds, property_percentages)
-        adj_yr_prop_tax = int(inflation_adjustment(yr_prop_tax, yr, 2024))
+        #adj_yr_prop_tax = int(inflation_adjustment(yr_prop_tax, yr, 2024))
+        adj_yr_prop_tax = yr_prop_tax
         prop_tax_list.append(adj_yr_prop_tax)
         prop_tax += adj_yr_prop_tax
         yr = str(int(yr)+1)
